@@ -1,19 +1,37 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Box } from '@chakra-ui/react';
-import Navbar from './Navbar';
-import Home from './Home';
-
-function App() {
+import HeroSection from "./components/HeroSection";
+import FeaturesSection from "./components/FeaturesSection.jsx";
+import HowItWorksSection from "./components/HowItWorksSection";
+import CTASection from "./components/CTASection";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar.jsx";
+import MissionVisionSection from "./components/MissionVisionSection.jsx";
+import AboutUsSection from "./components/AboutUsSection.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ComingSoonPage from "./components/ComingSoon.jsx";
+import "./App.css"
+export default function App() {
   return (
     <Router>
       <Navbar />
-      <Box p={4}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </Box>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <HeroSection />
+              <AboutUsSection />
+              <MissionVisionSection />
+              <FeaturesSection />
+      <HowItWorksSection />
+      <CTASection />
+      <Footer />
+              {/* ...other sections */}
+            </>
+          }
+        />
+        <Route path="/demo" element={<ComingSoonPage />} />
+      </Routes>
     </Router>
+    
   );
 }
-
-export default App;
