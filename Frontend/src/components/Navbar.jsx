@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
         top={0}
         left={0}
         zIndex={10}
-        bg="rgba(167, 167, 186, 0.95)"
+        bg="rgba(167, 167, 186, 0.94)"
         boxShadow="sm"
         backdropFilter="blur(6px)"
       >
