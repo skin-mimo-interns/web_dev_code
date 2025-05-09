@@ -12,19 +12,19 @@ import { useNavigate } from "react-router-dom";
         as="nav"
         w="100%"
         px={{ base: 4, md: 24 }}
-        py={4}
+        py={2}
         position="fixed"
         top={0}
         left={0}
         zIndex={10}
-        bg="rgba(10,10,26,0.95)"
+        bg="rgba(167, 167, 186, 0.95)"
         boxShadow="sm"
         backdropFilter="blur(6px)"
       >
         <Flex align="center">
           {/* Logo */}
           <HStack spacing={2}>
-            <Image src="/taiuo.png" alt="Taiuo Logo" boxSize="92px" />
+            <Image src="/taiuo.png" alt="Taiuo Logo" boxSize="82px" />
             <Box fontWeight="bold" fontSize="xl" color="cyan.300" letterSpacing="wide">
               Taiuo
             </Box>
