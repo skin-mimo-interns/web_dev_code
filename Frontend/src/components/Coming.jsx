@@ -35,8 +35,8 @@ export default function ComingSoon() {
         position="absolute"
         top={6}
         bg="white"
-        px={6}
-        py={2}
+        px={3}
+        py={1}
         roundedBottom="full"
         shadow="md"
         display="flex"
@@ -45,7 +45,7 @@ export default function ComingSoon() {
         userSelect="none"
         zIndex={10}
       >
-        <Image src={logo} alt="Taiuo logo" boxSize="75px" />
+        <Image src={logo} alt="Taiuo logo" boxSize="110px" borderRadius={"50%"} />
         
       </Box>
 

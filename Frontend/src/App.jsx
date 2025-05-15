@@ -7,9 +7,7 @@ import Navbar from "./components/Navbar.jsx";
 import MissionVisionSection from "./components/MissionVisionSection.jsx";
 import AboutUsSection from "./components/AboutUsSection.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ComingSoonPage from "./components/ComingSoon.jsx";
 import "./App.css"
-import Coming from "./components/Coming.jsx";
 import ComingSoon from "./components/Coming.jsx";
 export default function App() {
   return (
