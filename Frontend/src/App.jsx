@@ -9,10 +9,13 @@ import AboutUsSection from "./components/AboutUsSection.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ComingSoonPage from "./components/ComingSoon.jsx";
 import "./App.css"
+import Coming from "./components/Coming.jsx";
+import ComingSoon from "./components/Coming.jsx";
 export default function App() {
   return (
     <Router>
-      <Navbar />
+        <ComingSoon/>
+      {/* <Navbar />
       <Routes>
         <Route
           path="/"
@@ -25,13 +28,12 @@ export default function App() {
       <HowItWorksSection />
       <CTASection />
       <Footer />
-              {/* ...other sections */}
             </>
           }
         />
         <Route path="/demo" element={<ComingSoonPage />} />
-      </Routes>
-    </Router>
+      </Routes>*/}
+    </Router> 
     
   );
 }
