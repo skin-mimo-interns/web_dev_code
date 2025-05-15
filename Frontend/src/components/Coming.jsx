@@ -65,7 +65,7 @@ export default function ComingSoon() {
         </Heading>
         <Text fontSize="md" color="black" maxW="sm" mx="auto">
           We are going to launch our website Very Soon. <br />
-          Stay Tune.
+          Stay Tuned
         </Text>
 
         {/* Contact Us button and email hover */}
