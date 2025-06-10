@@ -123,18 +123,19 @@ const AnalysisPage = () => {
       const client = await Client.connect('tanish090905/new-app-rajavi-code');
       const result = await client.predict('/predict', { img: image });
       console.log(result.data)
-      const [predictedClass, confidence, gradCamBase64] = result.data || [];
-      if (!predictedClass || !confidence) {
-        setError('Could not parse Gradio response. Try again.');
-        setLoading(false);
-        return;
-      }
+      // const [predictedClass, confidence, gradCamBase64] = result.data || [];
+      // if (!predictedClass || !confidence) {
+      //   setError('Could not parse Gradio response. Try again.');
+      //   setLoading(false);
+      //   return;
+      // }
 
-      if (predictedClass === 'Unknown_Normal') {
-        setError('No disease detected! Please upload another image.');
-        setResults(null);
-        setGradCamImage(null);
-      } else {
+      // if (predictedClass === 'Unknown_Normal') {
+      //   setError('No disease detected! Please upload another image.');
+      //   setResults(null);
+      //   setGradCamImage(null);
+      // } else {
+      
         const response = result.data || [];
         const predictionText = response[0] || '';
         const confidence = response[1] || '0';
@@ -142,8 +143,8 @@ const AnalysisPage = () => {
 
         // Extract the actual condition name from the prediction text if needed
         // For example, if the text always starts with "The skin pattern resembles a **condition**"
-        const conditionMatch = predictionText.match(/\*\*(.*?)\*\*/);
-        const predictedClass = conditionMatch ? conditionMatch[1] : 'Unknown';
+        // const conditionMatch = predictionText.match(/\*\*(.*?)\*\*/);
+        // const predictedClass = conditionMatch ? conditionMatch[1] : 'Unknown';
 
         if (!predictionText || !confidence) {
           setError('Could not parse Gradio response. Try again.');
@@ -152,12 +153,11 @@ const AnalysisPage = () => {
         }
 
         setResults([{ 
-          condition: predictedClass, 
+          condition: predictionText, 
           confidence: parseFloat(confidence),
-          description: predictionText // You might want to show this too
         }]);
         setGradCamImage(gradCamBase64 ? `data:image/png;base64,${gradCamBase64}` : null);
-              }
+              
             } catch (err) {
               setError('Error during analysis. Try again.');
               console.error('Analysis Error:', err);
@@ -291,7 +291,9 @@ const AnalysisPage = () => {
                   {loading && <Spinner size="sm" mr={2} />}
                   Analyze Image
                 </Button>
-                {image && (
+                
+              </HStack>
+              {image && (
                   <Button
                     colorScheme="red"
                     variant="outline"
@@ -302,7 +304,6 @@ const AnalysisPage = () => {
                     Clear
                   </Button>
                 )}
-              </HStack>
             </VStack>
           </Box>
           <Box w={{ base: 'full', lg: '50%' }} p={8} bgGradient="linear(to-b, white, red.50)">
@@ -338,7 +339,7 @@ const AnalysisPage = () => {
                   </Box>
                 </Box>
               )}
-              {results && !error && (
+              {results && (
                 <Box
                   w="full"
                   p={6}
@@ -348,25 +349,8 @@ const AnalysisPage = () => {
                   textAlign="center"
                   animation={`${resultFadeIn} 0.5s ease-out`}
                 >
-                  {results.map((result, index) => (
+                  {results.map((res, index) => (
                     <VStack key={index} spacing={4} align="center">
-                      <HStack
-                        justify="center"
-                        p={4}
-                        bg="white"
-                        rounded="md"
-                        border="1px"
-                        borderColor="red.100"
-                      >
-                        <VStack spacing={1}>
-                          <Text fontSize="xl" fontWeight="bold" color="gray.800">
-                            {result.condition}
-                          </Text>
-                          <Text fontSize="md" color="gray.600">
-                            {(result.confidence * 100).toFixed(1)}% Confidence
-                          </Text>
-                        </VStack>
-                      </HStack>
                       {gradCamImage && (
                         <Box mt={4}>
                           <Text fontSize="md" fontWeight="medium" color="gray.700" mb={2}>
@@ -375,12 +359,32 @@ const AnalysisPage = () => {
                           <Image
                             src={gradCamImage}
                             alt="GradCAM visualization"
-                            maxH="192px"
+                            maxH="292px"
                             mx="auto"
                             rounded="md"
                           />
                         </Box>
-                      )}
+                      )}  
+                      <HStack
+                        justify="center"
+                        p={4}
+                        bg="white"
+                        rounded="md"
+                        border="1px"
+                        borderColor="red.100"
+                      >
+                        
+                        <VStack spacing={1}>
+
+                          <Text fontSize={{md:"xl", base:"md"}} textAlign={"left"} fontWeight="medium" color="gray.800">
+                            {res.condition}
+                          </Text>
+                          <Text fontSize="md" color="gray.600">
+                            {(res.confidence * 100).toFixed(1)}% Confidence
+                          </Text>
+                        </VStack>
+                      </HStack>
+                      
                     </VStack>
                   ))}
                 </Box>
