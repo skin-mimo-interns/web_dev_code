@@ -1,5 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { RekognitionClient, DetectFacesCommand } from "@aws-sdk/client-rekognition";
+import Webcam from "react-webcam";
+
 import {
   Box,
   Heading,
@@ -82,6 +85,11 @@ const AnalysisPage = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [faceResult, setFaceResult] = useState(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const webcamRef = useRef(null);
+
+
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -99,6 +107,8 @@ const AnalysisPage = () => {
     multiple: false,
   });
 
+  
+
   const handleSubmit = async () => {
     if (!image) {
       setError('Please upload an image to analyze.');
@@ -108,60 +118,99 @@ const AnalysisPage = () => {
     setLoading(true);
     setError(null);
     setResults(null);
+    setFaceResult(null);
 
     try {
+      // Convert image to ArrayBuffer
+      const arrayBuffer = await image.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+
+      // Rekognition Client
+      const rekognitionClient = new RekognitionClient({
+        region: "us-east-1", // change if needed
+        credentials: {
+          accessKeyId: "AKIA5VGOBQIRPAM54SXH",
+          secretAccessKey: "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",
+        },
+      });
+
+      // Rekognition: Face Detection
+      const detectFacesCommand = new DetectFacesCommand({
+        Image: { Bytes: bytes },
+        Attributes: ["ALL"],
+      });
+
+      const rekognitionResponse = await rekognitionClient.send(detectFacesCommand);
+      const faces = rekognitionResponse.FaceDetails;
+
+      if (!faces || faces.length === 0) {
+        setError("No face detected. Please upload a clear face image.");
+        setLoading(false);
+        return;
+      }
+
+      // Optional: display face attributes
+      const face = faces[0];
+      const minConfidence = 10;
+
+      setFaceResult({
+        ageRange: `${face.AgeRange.Low}–${face.AgeRange.High}`,
+        gender: face.Gender?.Value,
+        confidence: face.Confidence ? Math.floor(face.Confidence * 100) / 100 : null,
+        smile: face.Smile?.Confidence > minConfidence ? (face.Smile.Value ? "Yes" : "No") : null,
+        eyeglasses: face.Eyeglasses?.Confidence > minConfidence ? (face.Eyeglasses.Value ? "Yes" : "No") : null,
+        sunglasses: face.Sunglasses?.Confidence > minConfidence ? (face.Sunglasses.Value ? "Yes" : "No") : null,
+        beard: face.Beard?.Confidence > minConfidence ? (face.Beard.Value ? "Yes" : "No") : null,
+        mustache: face.Mustache?.Confidence > minConfidence ? (face.Mustache.Value ? "Yes" : "No") : null,
+        eyesOpen: face.EyesOpen?.Confidence > minConfidence ? (face.EyesOpen.Value ? "Yes" : "No") : null,
+        mouthOpen: face.MouthOpen?.Confidence > minConfidence ? (face.MouthOpen.Value ? "Yes" : "No") : null,
+        emotions: face.Emotions
+          ?.filter((e) => e.Confidence > minConfidence)
+          .map((e) => {
+            const truncated = Math.floor(e.Confidence * 100) / 100;
+            return `${e.Type} (${truncated.toFixed(2)}%)`;
+          })
+          .join(', ') || null
+
+      });
+
+
+
+      // Proceed to Gradio Prediction
       const client = await Client.connect('Taiuo/first_gradio_api');
       const result = await client.predict('/predict', {
         img: image,
       });
 
-      // API response is a tuple: (condition, confidence, image_array)
-      console.log(result)
       const raw = result.data?.[0];
 
-        if (typeof raw === 'string') {
-          const match = raw.match(/\('(.*)',\s*([\d.]+)/); // Regex to extract condition and confidence
-          if (match) {
-            const condition = match[1];
-            const confidence = parseFloat(match[2]);
+      if (typeof raw === 'string') {
+        const match = raw.match(/\('(.*)',\s*([\d.]+)/);
+        if (match) {
+          const condition = match[1];
+          const confidence = parseFloat(match[2]);
 
-            if (condition === 'Unknown_Normal') {
-              setError('No disease detected! Please upload another image.');
-              setResults(null);
-            } else {
-              setResults([{ condition, confidence }]);
-            }
-          } else {
-            setError('Could not parse the analysis result. Please try again.');
+          if (condition === 'Unknown_Normal') {
+            setError('No disease detected! Please upload another image.');
             setResults(null);
+          } else {
+            setResults([{ condition, confidence }]);
           }
         } else {
-          setError('Unexpected response format.');
-          setResults(null);
+          setError('Could not parse Gradio response. Try again.');
         }
+      } else {
+        setError('Unexpected Gradio result format.');
+      }
 
-      // console.log('API Response - Condition:', condition, 'Confidence:', confidence);
-
-      // if (condition === 'Unknown_Normal') {
-      //   setError('  No disease detected!, Please upload another image');
-      //   setResults(null);
-      // } else {
-      //   const formattedResults = [
-      //     {
-      //       condition: condition,
-      //       confidence: confidence,
-      //     },
-      //   ];
-      //   setResults(formattedResults);
-      // }
     } catch (err) {
-      setError('Failed to analyze the image. Please try again.');
-      setResults(null);
-      console.error('API Error:', err);
+      setError('Error during analysis. Try again.');
+      console.error('Analysis Error:', err);
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleClear = () => {
     setImage(null);
@@ -169,6 +218,18 @@ const AnalysisPage = () => {
     setResults(null);
     setError(null);
   };
+  const captureFromWebcam = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    fetch(imageSrc)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], "webcam-image.jpg", { type: "image/jpeg" });
+        setImage(file);
+        setImagePreview(URL.createObjectURL(file));
+        setShowCamera(false);
+      });
+  };
+
 
   return (
     <Box py={12} px={6} minH="100vh" bgGradient="linear(to-b, white, red.50)">
@@ -337,47 +398,40 @@ const AnalysisPage = () => {
                   )}
                 </Box>
                 <HStack spacing={4}>
-                <Button
-                        
-                        size="md"
-                        bg={"red.500"}
-                        color={"white"}
-                        leftIcon={<FaUpload />}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setImage(null);
-                          setImagePreview(null);
-                        }}
-                      >
-                       Upload
+                  {showCamera && (
+                  <Box mt={4} w="100%" textAlign="center">
+                    <Webcam
+                      audio={false}
+                      ref={webcamRef}
+                      screenshotFormat="image/jpeg"
+                      videoConstraints={{
+                        facingMode: "user",
+                      }}
+                      style={{ width: "100%", maxWidth: 400, borderRadius: "10px" }}
+                    />
+                    <HStack justify="center" mt={4}>
+                      <Button colorScheme="red" onClick={captureFromWebcam}>
+                        Capture Photo
                       </Button>
+                      <Button variant="ghost" onClick={() => setShowCamera(false)}>
+                        Cancel
+                      </Button>
+                    </HStack>
+                  </Box>
+                )}
+
+               
                 <Button
                   size="md"
                   bg={"red.500"}
-                        color={"white"}
+                  color={"white"}
                   variant="outline"
                   leftIcon={<FaUpload />}
-                  as="label"
-                  htmlFor="cameraInput"
+                  onClick={() => setShowCamera(true)}
                 >
                   Take Image
-                  <input
-                    id="cameraInput"
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        setImage(file);
-                        setImagePreview(URL.createObjectURL(file));
-                        setResults(null);
-                        setError(null);
-                      }
-                    }}
-                  />
                 </Button>
+
                 </HStack>
 
 
@@ -449,6 +503,25 @@ const AnalysisPage = () => {
                     </Box>
                   </Alert>
                 )}
+                {faceResult && (
+                  <Box mt={4} p={4} bg="gray.100" borderRadius="md" boxShadow="md">
+                    <Heading fontSize="md" mb={2} color={"black"}>Face Detection Result</Heading>
+                    <Box color={"black"}>
+                    <Text>Gender: {faceResult.gender}</Text>
+                    <Text>Age Range: {faceResult.ageRange} years</Text>
+                    <Text>Confidence: {faceResult.confidence}%</Text>
+                    <Text>Smile: {faceResult.smile}</Text>
+                    <Text>Sunglasses: {faceResult.sunglasses}</Text>
+                    <Text>Eyeglasses: {faceResult.eyeglasses}</Text>
+                    <Text>Beard: {faceResult.beard}</Text>
+                    <Text>Mustache: {faceResult.mustache}</Text>
+                    <Text>Eyes Open: {faceResult.eyesOpen}</Text>
+                    <Text>Mouth Open: {faceResult.mouthOpen}</Text>
+                    <Text>Emotions: {faceResult.emotions}</Text>
+                    </Box>
+                  </Box>
+                )}
+
 
                 {/* Results */}
                 {results && !error && (

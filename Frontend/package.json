@@ -20,6 +20,7 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
+    "@aws-sdk/client-rekognition": "^3.826.0",
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
@@ -40,6 +41,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^7.6.2",
     "react-slick": "^0.30.3",
+    "react-webcam": "^7.2.0",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.8",
     "three": "^0.176.0"
