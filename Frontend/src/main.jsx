@@ -4,7 +4,10 @@ import { ChakraProvider, extendTheme, ColorModeScript } from "@chakra-ui/react";
 import App from "./App";
 
 const theme = extendTheme({
-  config: { initialColorMode: "dark", useSystemColorMode: false },
+  fonts: {
+    heading: `'Roboto', sans-serif`,
+    body: `'Roboto', sans-serif`,
+  },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

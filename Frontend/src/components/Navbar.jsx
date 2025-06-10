@@ -1,102 +1,134 @@
+import React from 'react';
 import {
-    Box, Flex, HStack, Link, Button, Image, Spacer, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerBody, useDisclosure, VStack
-  } from "@chakra-ui/react";
-  import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
-  
-  export default function Navbar() {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const navigate = useNavigate();
-    return (
-      <Box
-        as="nav"
-        w="100%"
-        px={{ base: 4, md: 24 }}
-        py={2}
-        position="fixed"
-        top={0}
-        left={0}
-        zIndex={10}
-        bg="rgba(167, 167, 186, 0.94)"
-        boxShadow="sm"
-        backdropFilter="blur(6px)"
+  Flex,
+  HStack,
+  Text,
+  Button,
+  IconButton,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  VStack,
+  Image,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import { Link } from 'react-router-dom';
+
+const Navbar = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <Flex
+      as="nav"
+      justify="space-between"
+      align="center"
+      px={{ base: 4, md: 8 }}
+      py={4}
+      bg="white"
+      boxShadow="sm"
+      position="sticky"
+      top={0}
+      zIndex={10}
+    >
+      <HStack spacing={2}>
+        <Image src="logo.png" boxSize={16} />
+        <Link to={"/"}>
+        <Text fontSize={{ base: 'lg', md: 'xl' }} fontWeight="bold" color="gray.800">
+          T<Text as="span" color="red.500">AI</Text>UO
+        </Text>
+        </Link>
+      </HStack>
+
+      {/* Desktop Menu */}
+      <HStack
+        spacing={{ base: 3, md: 6 }}
+        color="gray.600"
+        display={{ base: 'none', md: 'flex' }}
+        fontSize={{ base: 'sm', md: 'md' }}
       >
-        <Flex align="center">
-          {/* Logo */}
-          <HStack spacing={2}>
-            <Image src="/taiuo.png" alt="Taiuo Logo" boxSize="82px" />
-            <Box fontWeight="bold" fontSize="xl" color="cyan.300" letterSpacing="wide">
-              Taiuo
-            </Box>
-          </HStack>
-          <Spacer />
-          {/* Desktop Nav Links */}
-          <HStack spacing={8} display={{ base: "none", md: "flex" }}>
-            <Link href="#features" color="gray.200" fontWeight="medium" _hover={{ color: "cyan.300" }}>Features</Link>
-            <Link color="gray.200" fontWeight="medium" href="#how" _hover={{ color: "cyan.300" }}>How It Works</Link>
-            <Link color="gray.200" fontWeight="medium" href="#contact" _hover={{ color: "cyan.300" }}>Contact</Link>
-          </HStack>
-          {/* Desktop CTA */}
-          <Button
-            ml={8}
-            colorScheme="cyan"
-            size="md"
-            px={6}
-            fontWeight="bold"
-            bgGradient="linear(to-r, cyan.400, purple.400)"
-            color="white"
-            _hover={{ bgGradient: "linear(to-r, cyan.500, purple.500)" }}
-            display={{ base: "none", md: "inline-flex" }}
-            onClick={() => navigate("/demo")}
-          >
-            Try Demo
-          </Button>
-          {/* Mobile Hamburger */}
-          <IconButton
-            aria-label="Open menu"
-            icon={<HamburgerIcon />}
-            variant="ghost"
-            color="white"
-            fontSize="2xl"
-            ml={2}
-            display={{ base: "inline-flex", md: "none" }}
-            onClick={onOpen}
-          />
-          {/* Mobile Drawer */}
-          <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-            <DrawerOverlay />
-            <DrawerContent bg="#0a0a1a">
-              <DrawerBody>
-                <Flex justify="flex-end" mt={2}>
-                  <IconButton
-                    aria-label="Close menu"
-                    icon={<CloseIcon />}
-                    variant="ghost"
-                    color="white"
-                    onClick={onClose}
-                  />
-                </Flex>
-                <VStack spacing={8} mt={8} align="start">
-                  <Link color="gray.200" fontWeight="medium" href="#features" onClick={onClose}>Features</Link>
-                  <Link color="gray.200" fontWeight="medium" href="#how" onClick={onClose}>How It Works</Link>
-                  <Link color="gray.200" fontWeight="medium" href="#contact" onClick={onClose}>Contact</Link>
-                  <Button
-                    colorScheme="cyan"
-                    size="md"
-                    px={6}
-                    fontWeight="bold"
-                    bgGradient="linear(to-r, cyan.400, purple.400)"
-                    color="white"
-                    w="100%"
-                    onClick={onClose}
-                  >
-                    Try Demo
-                  </Button>
-                </VStack>
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
-        </Flex>
-      </Box>
-    );
-  }
+        <Link to="/" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+          Home
+        </Link>
+        <Link to="/analysis" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+          Analysis
+        </Link>
+        <Link to="/products" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+          Products
+        </Link>
+        <Link to="/education" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+          Education
+        </Link>
+        <Link to="/contact" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+          Contact
+        </Link>
+        <Button
+          bg="red.500"
+          color="white"
+          px={{ base: 3, md: 4 }}
+          py={{ base: 1, md: 2 }}
+          borderRadius="full"
+          _hover={{ bg: 'red.600' }}
+          fontSize={{ base: 'sm', md: 'md' }}
+        >
+          Get Started
+        </Button>
+      </HStack>
+
+      {/* Mobile Menu Button */}
+      <IconButton
+        display={{ base: 'flex', md: 'none' }}
+        onClick={onOpen}
+        icon={<HamburgerIcon />}
+        variant="outline"
+        aria-label="Open Menu"
+        color="red"
+        outlineColor="blackAlpha.100"
+      />
+
+      {/* Mobile Drawer Menu */}
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerBody>
+            <VStack spacing={4} align="start">
+              <Link to="/" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+                Home
+              </Link>
+              <Link to="/analysis" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+                Analysis
+              </Link>
+              <Link to="/products" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+                Products
+              </Link>
+              <Link to="/education" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+                Education
+              </Link>
+              <Link to="/contact" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+                Contact
+              </Link>
+              <Button
+                bg="red.500"
+                color="white"
+                px={4}
+                py={2}
+                borderRadius="full"
+                _hover={{ bg: 'red.600' }}
+                onClick={onClose}
+              >
+                Get Started
+              </Button>
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </Flex>
+  );
+};
+
+export default Navbar;
