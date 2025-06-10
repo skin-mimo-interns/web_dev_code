@@ -194,6 +194,23 @@ const AnalysisPage = () => {
         <Heading as="h1" size="2xl" color="gray.800" textAlign="center">
           Expert Skin Analysis
         </Heading>
+        <Box 
+  bg="red.50" 
+  p={4} 
+  rounded="md" 
+  borderLeft="4px" 
+  borderColor="red.500" 
+  mb={6} 
+  w="full"
+>
+  <Text fontWeight="medium" color="gray.800">
+  Instructions:
+  </Text>
+  <Text color="gray.600" fontSize="sm">
+    • Take a <strong>close-up, zoomed-in</strong> image of the affected area for best results.<br />
+    • Only <strong>JPG, JPEG, or PNG</strong> formats are supported.
+  </Text>
+</Box>
         <Flex
           direction={{ base: 'column', lg: 'row' }}
           w="full"
@@ -380,7 +397,8 @@ const AnalysisPage = () => {
                             {res.condition}
                           </Text>
                           <Text fontSize="md" color="gray.600">
-                            {(res.confidence * 100).toFixed(1)}% Confidence
+                            Confidence:  
+                            {(res.confidence * 100).toFixed(1)}%
                           </Text>
                         </VStack>
                       </HStack>
