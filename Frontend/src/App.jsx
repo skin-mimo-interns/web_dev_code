@@ -8,6 +8,7 @@ import WhyChooseTaiuoSection from "./components/WhyChooseTaiuo";
 import GetInTouch from "./components/GetInToch";
 import AnalysisPage from "./components/Analysis";
 import Navbar from "./components/Navbar";
+import ComingSoon from "./components/Coming";
 export default function App() {
   return (
     <Router>
@@ -27,7 +28,7 @@ export default function App() {
             </>
           }
         />
-        <Route path="/analysis" element={<AnalysisPage />} />
+        <Route path="/analysis" element={<ComingSoon />} />
       </Routes>
     </Router> 
     
