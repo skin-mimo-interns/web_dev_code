@@ -12,11 +12,11 @@ import {
   DrawerContent,
   DrawerCloseButton,
   VStack,
+  Link,
   Image,
   useDisclosure,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -56,13 +56,13 @@ const Navbar = () => {
         <Link to="/analysis" _hover={{ color: 'red.500', textDecoration: 'none' }}>
           Analysis
         </Link>
-        <Link to="/products" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+        {/* <Link to="/products" _hover={{ color: 'red.500', textDecoration: 'none' }}>
           Products
         </Link>
         <Link to="/education" _hover={{ color: 'red.500', textDecoration: 'none' }}>
           Education
-        </Link>
-        <Link to="/contact" _hover={{ color: 'red.500', textDecoration: 'none' }}>
+        </Link> */}
+        <Link href="#contact" _hover={{ color: 'red.500', textDecoration: 'none' }}>
           Contact
         </Link>
         <Button
@@ -103,13 +103,13 @@ const Navbar = () => {
               <Link to="/analysis" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
                 Analysis
               </Link>
-              <Link to="/products" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+              {/* <Link to="/products" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
                 Products
               </Link>
               <Link to="/education" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
                 Education
-              </Link>
-              <Link to="/contact" onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
+              </Link> */}
+              <Link href='contact' onClick={onClose} _hover={{ color: 'red.500', textDecoration: 'none' }}>
                 Contact
               </Link>
               <Button

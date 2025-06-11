@@ -4,6 +4,7 @@ import { faMapMarkerAlt, faEnvelope, faPhone } from '@fortawesome/free-solid-svg
 
 const GetInTouch = () => (
   <Box
+  id='contact'
     py={16}
     px={6}
     bg={"red.500"}

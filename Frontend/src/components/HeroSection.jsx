@@ -116,7 +116,7 @@ const HeroSection = () => {
                   Start AI Analysis
                 </Button>
               </Link>
-              <Button
+              {/* <Button
                 border="1px"
                 borderColor="gray.300"
                 color="gray.700"
@@ -133,7 +133,7 @@ const HeroSection = () => {
                 fontSize={{ base: 'sm', md: 'md' }}
               >
                 Watch Demo
-              </Button>
+              </Button> */}
             </HStack>
             <SimpleGrid
               columns={2}
